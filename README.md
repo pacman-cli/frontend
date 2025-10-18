@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Frontend (Next.js)
 
-## Getting Started
+Modern Next.js app that consumes the Go API from the repo root. Styled for a clean, dark-themed blog.
 
-First, run the development server:
+### Requirements
+- Node 18+
+- npm or pnpm
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Environment
+Create `.env.local` at `frontend/.env.local`:
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Scripts
+```bash
+npm run dev     # start dev server on http://localhost:3000
+npm run build   # build for production
+npm run start   # start production server
+npm run lint    # run eslint
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Pages
+- `/` landing
+- `/posts` posts list
+- `/posts/[id]` post detail
+- `/about` about page
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Local Development
+1) Ensure the backend API is running on `http://localhost:8080` (see repo root README).
+2) Install deps and run dev server:
+```bash
+npm install
+npm run dev
+```
+3) Visit `http://localhost:3000`.
 
-## Learn More
+### Configuration
+The base URL for API requests is read from `NEXT_PUBLIC_API_BASE_URL` and used in `src/lib/api.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+### Notes
+- When changing API shape or routes, update the fetch helpers in `src/lib/api.ts` and any affected pages.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# frontend
