@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0A1930; /* site background */
+  --foreground: #E2E8F0; /* slate-200-ish for good contrast */
 }
 
 @theme inline {
@@ -14,13 +14,50 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0A1930; /* keep same background in dark */
+    --foreground: #E2E8F0;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
+
+/* Explicit IBM Plex Mono utility */
+.font-ibm {
+  font-family: var(--font-ibm-plex-mono) !important;
+}
+
+/* Prefer IBM Plex Mono where available; falls back to system monospace */
+.font-dank {
+  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+/* Ensure markdown/typography uses IBM Plex Mono (Tailwind Typography can override font-family) */
+.prose,
+.prose :where(p, li, h1, h2, h3, h4, h5, h6, code, pre, a, strong, em, blockquote) {
+  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+/* Stronger specificity for the full blog article */
+article.prose,
+article.prose :where(p, li, h1, h2, h3, h4, h5, h6, code, pre, a, strong, em, blockquote) {
+  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace !important;
+}
+
+/* Simple fade-in up animation utilities */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp .5s ease-out both; }
+.fade-in-1 { animation: fadeInUp .6s ease-out .05s both; }
+.fade-in-2 { animation: fadeInUp .6s ease-out .12s both; }
+.fade-in-3 { animation: fadeInUp .6s ease-out .2s both; }
+
