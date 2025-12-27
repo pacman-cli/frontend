@@ -30,17 +30,16 @@ function getAllTags(posts: Post[]): string[] {
   return Array.from(set).sort((a, b) => a.localeCompare(b))
 }
 
-export default async function PostsPage({ searchParams }: { searchParams: Promise<{ tag?: string }> }) {
+// Parsing searchParams in Deno/Next.js adapter might be causing the crash.
+// Temporarily removing searchParams handling to isolate the issue.
+export default async function PostsPage() {
   let posts: Post[] = []
   let fetchError = false
 
   try {
-    // Add timeout for SSR fetch
     const controller = new AbortController()
-    // Reduced timeout to fail faster if backend is slow
-    const timeoutId = setTimeout(() => controller.abort(), 8000)
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
 
-    // REDUCED SIZE to 20 to prevent timeout
     const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs?size=20&publicOnly=true`, {
       signal: controller.signal,
       next: { revalidate: 30 },
@@ -67,18 +66,11 @@ export default async function PostsPage({ searchParams }: { searchParams: Promis
     posts = []
   }
 
-  let tag: string | undefined
-  try {
-    const params = await searchParams
-    tag = params.tag
-  } catch {
-    tag = undefined
-  }
+  // Hardcode tag to undefined for debugging
+  const tag = undefined
 
   const allTags = getAllTags(posts)
-  const filtered = tag
-    ? posts.filter((p) => (p.tags || []).some((t) => t.toLowerCase() === tag!.toLowerCase()))
-    : posts
+  const filtered = posts
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-28 min-h-screen">
