@@ -1,6 +1,4 @@
 import Link from "next/link"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
 
 export const dynamic = "force-dynamic"
 
@@ -39,9 +37,11 @@ export default async function PostsPage({ searchParams }: { searchParams: Promis
   try {
     // Add timeout for SSR fetch
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
+    // Reduced timeout to fail faster if backend is slow
+    const timeoutId = setTimeout(() => controller.abort(), 8000)
 
-    const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs?size=100&publicOnly=true`, {
+    // REDUCED SIZE to 20 to prevent timeout
+    const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs?size=20&publicOnly=true`, {
       signal: controller.signal,
       next: { revalidate: 30 },
     })
@@ -120,11 +120,12 @@ export default async function PostsPage({ searchParams }: { searchParams: Promis
               <span>{new Date(p.createdAt).toDateString()}</span>
             </div>
             <div className="mt-2 text-xl font-semibold text-card-foreground group-hover:text-primary transition-colors">{p.title}</div>
-            <div className="mt-4 text-muted-foreground leading-relaxed prose prose-sm prose-invert max-w-none line-clamp-3">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {p.content}
-              </ReactMarkdown>
+
+            {/* Optimized preview: Plain text slice instead of Markdown rendering */}
+            <div className="mt-4 text-muted-foreground leading-relaxed line-clamp-3">
+              {p.content.substring(0, 180).replace(/[#*_`]/g, '')}...
             </div>
+
             <div className="mt-5 flex flex-wrap gap-2">
               {p.tags?.map((t) => (
                 <span key={t} className="text-xs px-2 py-1 rounded-full bg-muted border border-border text-muted-foreground group-hover:border-primary/60 transition-colors">{t}</span>
@@ -132,6 +133,12 @@ export default async function PostsPage({ searchParams }: { searchParams: Promis
             </div>
           </Link>
         ))}
+
+        {fetchError && (
+          <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-center">
+            Failed to load posts. Please try again later.
+          </div>
+        )}
       </div>
     </main>
   )
