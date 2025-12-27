@@ -42,3 +42,4 @@ The base URL for API requests is read from `NEXT_PUBLIC_API_BASE_URL` and used i
 - When changing API shape or routes, update the fetch helpers in `src/lib/api.ts` and any affected pages.
 
 # frontend
+# Trigger rebuild
