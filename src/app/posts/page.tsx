@@ -1,78 +1,8 @@
 import Link from "next/link"
 
-export const dynamic = "force-dynamic"
-
-type Post = {
-  id: number
-  title: string
-  slug: string
-  content: string
-  tags: string[]
-  createdAt: string
-  updatedAt: string
-}
-
-type ApiPost = {
-  id: number
-  title: string
-  slug: string
-  content: string
-  createdAt: string
-  updatedAt: string
-  tags: string | null
-}
-
-function getAllTags(posts: Post[]): string[] {
-  const set = new Set<string>()
-  for (const p of posts) {
-    for (const t of p.tags ?? []) set.add(t)
-  }
-  return Array.from(set).sort((a, b) => a.localeCompare(b))
-}
-
-// Parsing searchParams in Deno/Next.js adapter might be causing the crash.
-// Temporarily removing searchParams handling to isolate the issue.
-export default async function PostsPage() {
-  let posts: Post[] = []
-  let fetchError = false
-
-  try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 5000)
-
-    const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs?size=20&publicOnly=true`, {
-      signal: controller.signal,
-      next: { revalidate: 30 },
-    })
-    clearTimeout(timeoutId)
-
-    if (res.ok) {
-      const data = await res.json() as { content: ApiPost[] }
-      posts = (data.content || []).map((p) => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        content: p.content,
-        createdAt: p.createdAt,
-        updatedAt: p.updatedAt,
-        tags: p.tags ? p.tags.split(",") : []
-      }))
-    } else {
-      fetchError = true
-    }
-  } catch (error) {
-    console.error("Failed to fetch posts:", error)
-    fetchError = true
-    posts = []
-  }
-
-  // Hardcode tag to undefined for debugging
-  // Hardcode tag to undefined for debugging
-  const tag: string | undefined = undefined
-
-  const allTags = getAllTags(posts)
-  const filtered = posts
-
+// Ultra-minimal static page to debug Deno deployment
+// No data fetching, no dynamic content
+export default function PostsPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-28 min-h-screen">
       <div className="flex items-center justify-between">
@@ -86,52 +16,13 @@ export default async function PostsPage() {
         </Link>
       </div>
 
-      {/* Filter bar */}
-      <div className="mt-6 flex flex-wrap gap-2">
-        <span className="text-muted-foreground text-sm mr-2 py-1">Filter:</span>
-        <Link
-          href="/posts"
-          className={`text-xs px-3 py-1 rounded-full border transition-colors ${!tag ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground hover:border-primary/60"}`}
-        >
-          All
-        </Link>
-        {allTags.map((t) => (
-          <Link
-            key={t}
-            href={`/posts?tag=${encodeURIComponent(t)}`}
-            className={`text-xs px-3 py-1 rounded-full border transition-colors ${tag && tag.toLowerCase() === t.toLowerCase() ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground hover:border-primary/60"}`}
-          >
-            {t}
-          </Link>
-        ))}
-      </div>
-
-      <div className="mt-8 grid gap-8 grid-cols-1">
-        {(Array.isArray(filtered) ? filtered : []).map((p) => (
-          <Link key={p.id} href={`/posts/${p.slug}`} className="group block rounded-xl bg-card hover:bg-accent/50 border border-border p-7 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg font-mono">
-            <div className="text-muted-foreground text-sm flex justify-between">
-              <span>{new Date(p.createdAt).toDateString()}</span>
-            </div>
-            <div className="mt-2 text-xl font-semibold text-card-foreground group-hover:text-primary transition-colors">{p.title}</div>
-
-            {/* Optimized preview: Plain text slice instead of Markdown rendering */}
-            <div className="mt-4 text-muted-foreground leading-relaxed line-clamp-3">
-              {p.content.substring(0, 180).replace(/[#*_`]/g, '')}...
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {p.tags?.map((t) => (
-                <span key={t} className="text-xs px-2 py-1 rounded-full bg-muted border border-border text-muted-foreground group-hover:border-primary/60 transition-colors">{t}</span>
-              ))}
-            </div>
-          </Link>
-        ))}
-
-        {fetchError && (
-          <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-center">
-            Failed to load posts. Please try again later.
-          </div>
-        )}
+      <div className="mt-8 p-8 rounded-xl bg-card border border-border text-center">
+        <p className="text-muted-foreground">
+          This is a static test page. If you can see this, the routing works!
+        </p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Debug timestamp: {new Date().toISOString()}
+        </p>
       </div>
     </main>
   )
