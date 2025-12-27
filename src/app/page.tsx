@@ -1,17 +1,46 @@
-import LandingHero from "./components/LandingHero"
+import AboutSection from "./components/AboutSection"
+import ContactSection from "./components/ContactSection"
+import HeroSection from "./components/HeroSection"
 import LandingRecentPosts from "./components/LandingRecentPosts"
+import ProjectsSection from "./components/ProjectsSection"
+import SkillsSection from "./components/SkillsSection"
+import TestimonialsSection from "./components/TestimonialsSection"
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
-      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl opacity-50 animate-pulse" />
+    <main className="min-h-screen">
+      {/* Hero */}
+      <HeroSection />
 
-      <LandingHero />
+      {/* Skills / What I Do */}
+      <SkillsSection />
 
-      <section className="max-w-5xl mx-auto px-6 pb-24">
-        <LandingRecentPosts />
+      {/* About */}
+      <AboutSection />
+
+      {/* Projects */}
+      <ProjectsSection />
+
+      {/* Recent Blog Posts */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+              Latest <span className="text-primary">Posts</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground text-lg">
+              Thoughts, tutorials, and insights from my development journey.
+            </p>
+          </div>
+          <LandingRecentPosts />
+        </div>
       </section>
+
+      {/* Testimonials */}
+      <TestimonialsSection />
+
+      {/* Contact */}
+      <ContactSection />
     </main>
   )
 }
