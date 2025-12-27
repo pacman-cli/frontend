@@ -67,7 +67,8 @@ export default async function PostsPage() {
   }
 
   // Hardcode tag to undefined for debugging
-  const tag = undefined
+  // Hardcode tag to undefined for debugging
+  const tag: string | undefined = undefined
 
   const allTags = getAllTags(posts)
   const filtered = posts
