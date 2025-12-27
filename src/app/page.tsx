@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import LandingRecentPosts from "./components/LandingRecentPosts";
 
 export default function Home() {
@@ -18,4 +19,28 @@ export default function Home() {
       </section>
     </main>
   );
+=======
+import LandingHero from "./components/LandingHero"
+import LandingRecentPosts from "./components/LandingRecentPosts"
+
+// This is now a Server Component
+export default function Home() {
+  return (
+    <main className="min-h-screen relative overflow-hidden">
+      {/* Background Decor can remain here as pure HTML/CSS or move to Client Component if it needs interaction.
+          For now, static divs are fine in SC, but if they depend on browser APIs they might need to be client.
+          The 'animate-pulse' is CSS, so it works in SC.
+      */}
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
+      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl opacity-50 animate-pulse" />
+
+      <LandingHero />
+
+      <section className="max-w-5xl mx-auto px-6 pb-24">
+        {/* LandingRecentPosts is an async Server Component, which is valid here */}
+        <LandingRecentPosts />
+      </section>
+    </main>
+  )
+>>>>>>> 55c0a3a (Added codes)
 }
