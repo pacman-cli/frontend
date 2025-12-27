@@ -9,42 +9,42 @@ const projects = [
   title: "Portfolio Blog Platform",
   description: "Full-stack blog with Spring Boot backend, JWT auth, and Next.js frontend.",
   tags: ["Spring Boot", "Next.js", "PostgreSQL"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  },
  {
   title: "Real-time Chat API",
   description: "WebSocket-based messaging service with Redis pub/sub for scaling.",
   tags: ["Java", "WebSocket", "Redis"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  },
  {
   title: "E-commerce Backend",
   description: "Microservices architecture with Kafka events and order processing.",
   tags: ["Microservices", "Kafka", "Docker"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  },
  {
   title: "Task Management API",
   description: "RESTful API with role-based access control and comprehensive testing.",
   tags: ["REST API", "JWT", "JUnit"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  },
  {
   title: "Inventory System",
   description: "Stock management with real-time updates and analytics dashboard.",
   tags: ["Spring Boot", "MySQL", "Charts"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  },
  {
   title: "Auth Service",
   description: "OAuth2 and JWT authentication microservice with refresh tokens.",
   tags: ["OAuth2", "Security", "Redis"],
-  github: "https://github.com/puspo",
+  github: "https://github.com/pacman-cli",
   live: "#"
  }
 ]

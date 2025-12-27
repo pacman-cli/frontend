@@ -49,7 +49,7 @@ export default function ContactSection() {
 
       {/* LinkedIn */}
       <Link
-       href="https://linkedin.com/in/puspo"
+       href="https://linkedin.com/in/iampuspo"
        target="_blank"
        className="flex items-center gap-3 px-6 py-4 rounded-xl bg-background border border-border hover:border-primary/50 transition-colors group"
       >
