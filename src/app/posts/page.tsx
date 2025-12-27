@@ -1,7 +1,8 @@
-import Link from "next/link"
+"use client"
 
-// Simplified page without AbortController or Next.js cache options
-// For Deno Edge compatibility
+import Link from "next/link"
+import { useEffect, useState } from "react"
+
 type Post = {
   id: number
   title: string
@@ -20,35 +21,42 @@ type ApiPost = {
   tags: string | null
 }
 
-async function getPosts(): Promise<Post[]> {
-  try {
-    // Simple fetch without AbortController or Next.js-specific options
-    const res = await fetch("https://backend-a0mblg.fly.dev/api/blogs?size=20&publicOnly=true", {
-      cache: "no-store", // Standard fetch cache option
-    })
+export default function PostsPage() {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-    if (!res.ok) {
-      console.error("Backend returned error:", res.status)
-      return []
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch("https://backend-a0mblg.fly.dev/api/blogs?size=20&publicOnly=true")
+
+        if (!res.ok) {
+          setError(true)
+          setLoading(false)
+          return
+        }
+
+        const data = await res.json() as { content: ApiPost[] }
+        const mapped = (data.content || []).map((p) => ({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          content: p.content,
+          createdAt: p.createdAt,
+          tags: p.tags ? p.tags.split(",") : []
+        }))
+        setPosts(mapped)
+      } catch (e) {
+        console.error("Failed to fetch posts:", e)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    const data = await res.json() as { content: ApiPost[] }
-    return (data.content || []).map((p) => ({
-      id: p.id,
-      title: p.title,
-      slug: p.slug,
-      content: p.content,
-      createdAt: p.createdAt,
-      tags: p.tags ? p.tags.split(",") : []
-    }))
-  } catch (error) {
-    console.error("Failed to fetch posts:", error)
-    return []
-  }
-}
-
-export default async function PostsPage() {
-  const posts = await getPosts()
+    fetchPosts()
+  }, [])
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-28 min-h-screen">
@@ -63,7 +71,15 @@ export default async function PostsPage() {
         </Link>
       </div>
 
-      {posts.length === 0 ? (
+      {loading ? (
+        <div className="mt-8 p-8 rounded-xl bg-card border border-border text-center">
+          <p className="text-muted-foreground">Loading posts...</p>
+        </div>
+      ) : error ? (
+        <div className="mt-8 p-8 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
+          <p className="text-destructive">Failed to load posts. Please try again later.</p>
+        </div>
+      ) : posts.length === 0 ? (
         <div className="mt-8 p-8 rounded-xl bg-card border border-border text-center">
           <p className="text-muted-foreground">No posts available yet.</p>
         </div>
