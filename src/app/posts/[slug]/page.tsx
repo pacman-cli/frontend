@@ -1,5 +1,8 @@
-import { apiGet } from "@/lib/api"
+"use client"
+
 import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import rehypeHighlight from "rehype-highlight"
 import rehypeRaw from "rehype-raw"
@@ -10,28 +13,80 @@ type Post = {
   title: string
   slug: string
   content: string
-  tags: string | string[]
+  tags: string[]
   createdAt: string
   updatedAt: string
 }
 
-export const dynamic = "force-dynamic"
+type ApiPost = {
+  id: number
+  title: string
+  slug: string
+  content: string
+  tags: string | null
+  createdAt: string
+  updatedAt: string
+}
 
-export default async function PostDetail({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
-  let post: Post | null = null
+export default function PostDetail() {
+  const params = useParams()
+  const slug = params.slug as string
 
-  try {
-    const rawPost = await apiGet<Post>(`/blogs/${slug}`)
-    post = {
-      ...rawPost,
-      tags: typeof rawPost.tags === 'string' ? rawPost.tags.split(',') : (rawPost.tags || [])
+  const [post, setPost] = useState<Post | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    if (!slug) return
+
+    async function fetchPost() {
+      try {
+        const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs/${slug}`)
+
+        if (!res.ok) {
+          setError(true)
+          setLoading(false)
+          return
+        }
+
+        const rawPost = await res.json() as ApiPost
+        setPost({
+          ...rawPost,
+          tags: rawPost.tags ? rawPost.tags.split(',') : []
+        })
+      } catch (e) {
+        console.error("Failed to fetch post:", e)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
     }
-  } catch (e) {
-    console.error(e)
+
+    fetchPost()
+  }, [slug])
+
+  if (loading) {
+    return (
+      <main className="max-w-3xl mx-auto px-6 py-28 min-h-screen">
+        <div className="mb-10">
+          <Link
+            href="/posts"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-medium group"
+          >
+            <span className="group-hover:-translate-x-1 transition-transform duration-200">←</span>
+            Back to posts
+          </Link>
+        </div>
+        <div className="animate-pulse">
+          <div className="h-12 bg-muted rounded w-3/4"></div>
+          <div className="mt-4 h-4 bg-muted rounded w-32"></div>
+          <div className="mt-10 h-64 bg-muted rounded-xl"></div>
+        </div>
+      </main>
+    )
   }
 
-  if (!post) {
+  if (error || !post) {
     return (
       <main className="max-w-3xl mx-auto px-6 py-20 text-center min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold text-foreground">Post not found</h1>
@@ -43,8 +98,6 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
       </main>
     )
   }
-
-  const tagList = Array.isArray(post.tags) ? post.tags : []
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-28 min-h-screen">
@@ -75,13 +128,13 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         </article>
       </section>
 
-      {tagList.length > 0 ? (
+      {post.tags.length > 0 && (
         <div className="mt-10 flex flex-wrap gap-2">
-          {tagList.map((t) => (
+          {post.tags.map((t) => (
             <span key={t} className="text-xs px-2.5 py-1 rounded-full bg-muted border border-border text-muted-foreground">{t}</span>
           ))}
         </div>
-      ) : null}
+      )}
     </main>
   )
 }
