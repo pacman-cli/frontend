@@ -1,4 +1,3 @@
-import { apiGet } from "@/lib/api"
 import Link from "next/link"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -26,17 +25,29 @@ export const dynamic = "force-dynamic"
 export default async function LandingRecentPosts() {
   let posts: Post[] = []
   try {
-    const res = await apiGet<{ content: ApiPost[] }>("/blogs?size=3&sort=createdAt,desc&publicOnly=true")
-    posts = (res.content || []).map((p) => ({
-      id: p.id,
-      title: p.title,
-      slug: p.slug,
-      content: p.content,
-      createdAt: p.createdAt,
-      tags: p.tags ? p.tags.split(",") : []
-    }))
+    // Direct fetch with timeout for Deno SSR compatibility
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+    const res = await fetch("https://backend-a0mblg.fly.dev/api/blogs?size=3&sort=createdAt,desc&publicOnly=true", {
+      signal: controller.signal,
+      next: { revalidate: 30 },
+    })
+    clearTimeout(timeoutId)
+
+    if (res.ok) {
+      const data = await res.json() as { content: ApiPost[] }
+      posts = (data.content || []).map((p) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        content: p.content,
+        createdAt: p.createdAt,
+        tags: p.tags ? p.tags.split(",") : []
+      }))
+    }
   } catch (e) {
-    console.error(e)
+    console.error("Failed to fetch recent posts:", e)
     posts = []
   }
 

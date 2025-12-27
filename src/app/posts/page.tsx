@@ -1,4 +1,3 @@
-import { apiGet } from "@/lib/api"
 import Link from "next/link"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -35,25 +34,50 @@ function getAllTags(posts: Post[]): string[] {
 
 export default async function PostsPage({ searchParams }: { searchParams: Promise<{ tag?: string }> }) {
   let posts: Post[] = []
+  let fetchError = false
+
   try {
-    const res = await apiGet<{ content: ApiPost[] }>("/blogs?size=100&publicOnly=true")
-    posts = (res.content || []).map((p) => ({
-      id: p.id,
-      title: p.title,
-      slug: p.slug,
-      content: p.content,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt,
-      tags: p.tags ? p.tags.split(",") : []
-    }))
-  } catch {
+    // Add timeout for SSR fetch
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
+
+    const res = await fetch(`https://backend-a0mblg.fly.dev/api/blogs?size=100&publicOnly=true`, {
+      signal: controller.signal,
+      next: { revalidate: 30 },
+    })
+    clearTimeout(timeoutId)
+
+    if (res.ok) {
+      const data = await res.json() as { content: ApiPost[] }
+      posts = (data.content || []).map((p) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        content: p.content,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+        tags: p.tags ? p.tags.split(",") : []
+      }))
+    } else {
+      fetchError = true
+    }
+  } catch (error) {
+    console.error("Failed to fetch posts:", error)
+    fetchError = true
     posts = []
   }
 
-  const { tag } = await searchParams
+  let tag: string | undefined
+  try {
+    const params = await searchParams
+    tag = params.tag
+  } catch {
+    tag = undefined
+  }
+
   const allTags = getAllTags(posts)
   const filtered = tag
-    ? posts.filter((p) => (p.tags || []).some((t) => t.toLowerCase() === tag.toLowerCase()))
+    ? posts.filter((p) => (p.tags || []).some((t) => t.toLowerCase() === tag!.toLowerCase()))
     : posts
 
   return (
