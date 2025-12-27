@@ -48,11 +48,11 @@ export default async function LandingRecentPosts() {
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">Recent posts</h2>
-        <Link href="/posts" className="text-primary hover:underline hover:text-primary/80 transition-colors">View all</Link>
+        <Link href="/posts" className="text-primary hover:text-primary/80 transition-colors link-underline">View all</Link>
       </div>
       <div className="mt-6 grid gap-4">
         {posts.map((p) => (
-          <Link key={p.id} href={`/posts/${p.slug}`} className="block rounded-lg border border-border bg-card hover:bg-accent/50 p-5 transition-all duration-200 hover:-translate-y-0.5 shadow-sm hover:shadow-md">
+          <Link key={p.id} href={`/posts/${p.slug}`} className="block rounded-lg border border-border bg-card p-5 card-glow">
             <div className="text-sm text-muted-foreground">{new Date(p.createdAt).toDateString()}</div>
             <div className="mt-1 text-lg font-semibold text-card-foreground">{p.title}</div>
             <div className="mt-2 text-muted-foreground line-clamp-2 prose prose-invert prose-sm max-w-none">

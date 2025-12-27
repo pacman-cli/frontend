@@ -126,7 +126,7 @@ export default function AboutPage() {
       </header>
 
       <section className="mt-12 grid gap-8 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-xl border border-border bg-card p-6 shadow-sm fade-in-1">
+        <div className="md:col-span-2 rounded-xl border border-border bg-card p-6 card-glow fade-in-1">
           <h2 className="text-xl font-semibold text-card-foreground">What I do</h2>
           <ul className="mt-4 space-y-3 text-muted-foreground list-disc pl-5">
             <li>Design and build REST services in Go with robust validation and observability</li>
@@ -135,7 +135,7 @@ export default function AboutPage() {
             <li>Operate with best practices: CI, code reviews, and incremental delivery</li>
           </ul>
         </div>
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm fade-in-2">
+        <div className="rounded-xl border border-border bg-card p-6 card-glow fade-in-2">
           <h2 className="text-xl font-semibold text-card-foreground">Skills</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {[
@@ -150,7 +150,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-12 rounded-xl border border-border bg-card p-6 shadow-sm fade-in-3">
+      <section className="mt-12 rounded-xl border border-border bg-card p-6 card-glow fade-in-3">
         <h2 className="text-xl font-semibold text-card-foreground">Experience highlights</h2>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <div className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md rounded-lg p-3">
@@ -180,7 +180,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-12 rounded-xl border border-border bg-card p-6 shadow-sm fade-in-3">
+      <section className="mt-12 rounded-xl border border-border bg-card p-6 card-glow fade-in-3">
         <h2 className="text-xl font-semibold text-card-foreground">Education</h2>
         <p className="mt-2 text-muted-foreground">
           Bachelor&apos;s student at United International University.
@@ -188,7 +188,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mt-12">
-        <Link href="/posts" className="inline-block px-5 py-3 rounded-md border border-primary text-primary hover:bg-primary/10 transition-colors font-medium">
+        <Link href="/posts" className="inline-block px-5 py-3 rounded-md border border-primary text-primary hover:bg-primary/10 transition-colors font-medium btn-shine">
           View my posts
         </Link>
       </section>

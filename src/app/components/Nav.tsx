@@ -11,8 +11,8 @@ export default function Nav() {
         </Link>
         <div className="flex items-center gap-6">
           <div className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
-            <Link className="transition-colors hover:text-primary" href="/posts">Posts</Link>
-            <Link className="transition-colors hover:text-primary" href="/about">About me</Link>
+            <Link className="transition-colors hover:text-primary link-underline" href="/posts">Posts</Link>
+            <Link className="transition-colors hover:text-primary link-underline" href="/about">About me</Link>
           </div>
           <ModeToggle />
         </div>
